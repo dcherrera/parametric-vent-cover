@@ -7,16 +7,20 @@ tube();
 size=90;
 //find the amount of mesh holes to make
 wh=size/4+1;
-
+//hole module is literaly just making a 4mm square and removing the center of it. for the mesh.
 module hole(){
 difference(){linear_extrude(1)square(4,4);
             translate([1,1,0])linear_extrude(1)square(2,2);}}
+//holemaker makes a circle that can be used to cut a circle in the mesh that is made from the hole module.
 module holemaker(){
 difference(){linear_extrude(1)square(size+4,size+4);
             translate([size/2,size/2,0])linear_extrude(1)circle(d=size,$fn=360);}}
+//square_mesh is as it sounds. use a for loop starting at zero and using wh variable to set the range, it makes a square mesh out of the hole module 
 module square_mesh(){for (x=[0:wh-1],y=[0:wh-1]) {translate([4*x,4*y,0])hole();}}
+//mesh is the final round circle mesh cut out of the square_mesh module.
 module mesh(){difference(){square_mesh();
                            holemaker();}}
+//tube is to make the cylandar that will have an inner diameter equal to the outer diameter of your pipe which is the size variable. the od is only 3mm greater than the id.
 module tube(){difference(){
 translate([size/2,size/2,0])linear_extrude(20)circle(d=size+3, $fn=360);
 translate([size/2,size/2,0])linear_extrude(20)circle(d=size, $fn=360);}}
